@@ -54,11 +54,15 @@ import fs from 'fs';
             .send("image cant be converted")
       }
 
+        //schedule to clean up the code after the return statement
+        setTimeout(function() {
+         // do some stuff here that will execute out of band
+         // after this function returns
+          deleteLocalFiles( [ resultingImage ] )
+     }, 10)
 
         return res.status(200)
               .sendFile(resultingImage)
-        //return res.status(200)
-            //.send(resultingImage);
      });
 
 
