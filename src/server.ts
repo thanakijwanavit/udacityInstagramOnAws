@@ -1,6 +1,8 @@
 import express, { Router, Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
+import fs from 'fs';
+
 
 (async () => {
 
@@ -43,8 +45,20 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
                 .send("image_url not found");
         }
 
+        let resultingImage = await filterImageFromURL(image_url)
+
+
+      // check if image is empty
+      if ( !resultingImage ){
+          return res.status(401)
+            .send("image cant be converted")
+      }
+
+
         return res.status(200)
-            .send(image_url);
+              .sendFile(resultingImage)
+        //return res.status(200)
+            //.send(resultingImage);
      });
 
 
