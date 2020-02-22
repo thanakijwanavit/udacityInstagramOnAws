@@ -1,6 +1,8 @@
-import express from 'express';
+import express, { Router, Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
+import fs from 'fs';
+
 
 (async () => {
 
@@ -33,6 +35,34 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   
   // Root Endpoint
   // Displays a simple message to the user
+
+  app.get("/filteredimage" ,
+      async ( req : Request, res : Response ) => {
+        let { image_url } = req.query;
+
+        if ( !image_url ) {
+            return res.status(400)
+                .send("image_url not found");
+        }
+
+        let resultingImage = await filterImageFromURL(image_url)
+
+
+      // check if image is empty
+      if ( !resultingImage ){
+          return res.status(401)
+            .send("image cant be converted")
+      }
+
+
+        return res.status(200)
+              .sendFile(resultingImage)
+        //return res.status(200)
+            //.send(resultingImage);
+     });
+
+
+
   app.get( "/", async ( req, res ) => {
     res.send("try GET /filteredimage?image_url={{}}")
   } );
